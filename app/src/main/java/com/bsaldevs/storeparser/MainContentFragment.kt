@@ -34,7 +34,7 @@ class MainContentFragment : Fragment(), MyApplication.OnProductAction {
 
     private var listener: OnFragmentInteractionListener? = null
     private lateinit var recyclerAdapter : Adapter
-    private lateinit var products : ArrayList<Product>
+    private lateinit var products : List<Product>
     private lateinit var application: MyApplication
     private lateinit var mainHint : TextView
 
@@ -44,6 +44,7 @@ class MainContentFragment : Fragment(), MyApplication.OnProductAction {
         application = context!!.applicationContext as MyApplication
         application.registerOnProductActionListener(this)
         products = application.getProducts()
+        Log.d("CDA_MCF", "products size - " + products.size)
     }
 
     override fun onCreateView(
@@ -53,6 +54,10 @@ class MainContentFragment : Fragment(), MyApplication.OnProductAction {
         val view = inflater.inflate(R.layout.fragment_main_content, container, false)
 
         mainHint = view.main_hint
+
+        if (products.size > 0)
+            view.main_hint.setVisibility(View.GONE)
+
         setupRecycledView(view.recycler_observable_goods)
         return view
     }

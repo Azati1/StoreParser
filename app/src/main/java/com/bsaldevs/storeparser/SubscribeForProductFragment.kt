@@ -51,7 +51,6 @@ class SubscribeForProductFragment : Fragment(), OnActionButtonListener {
         listener = null
     }
 
-
     interface OnFragmentInteractionListener {
         fun onSubscribeForProductFragmentInteraction(status : String)
     }
