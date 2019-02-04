@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.ArrayList
 import android.net.Uri
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -17,6 +16,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.view.MotionEvent
 import android.support.v4.view.ViewPager
 import android.widget.Toast
+import java.util.*
 
 class MainActivity : AppCompatActivity(), SubscribeForProductFragment.OnFragmentInteractionListener, MainContentFragment.OnFragmentInteractionListener {
 
@@ -176,6 +176,13 @@ class MainActivity : AppCompatActivity(), SubscribeForProductFragment.OnFragment
         supportActionBar!!.setTitle(R.string.app_name)
         view_pager.currentItem = 0
         isShowing = false
+    }
+
+    override fun onBackPressed() {
+        when (isShowing) {
+            true -> finishActionMode()
+            false -> super.onBackPressed()
+        }
     }
 
     private inner class ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
