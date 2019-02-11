@@ -1,6 +1,7 @@
 package com.bsaldevs.storeparser
 
 import android.arch.persistence.room.Dao
+import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
 
@@ -12,4 +13,7 @@ interface ProductDao {
 
     @Insert
     fun insertAllProducts(vararg products : Product)
+
+    @Delete
+    fun removeProduct(product: Product)
 }

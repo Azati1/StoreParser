@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import kotlinx.android.synthetic.main.activity_main.*
-import android.net.Uri
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -16,9 +15,37 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.view.MotionEvent
 import android.support.v4.view.ViewPager
 import android.widget.Toast
-import java.util.*
+import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(), SubscribeForProductFragment.OnFragmentInteractionListener, MainContentFragment.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), SubscribeForProductFragment.OnFragmentInteractionListener, MainContentFragment.OnMainContentFragmentInteraction {
+
+    override fun onFragmentSetup(fragment: MainContentFragment) {
+        Log.d("CDA_MA", "onFragmentSetup")
+        val fragments = supportFragmentManager.fragments
+        fragments.forEach { f ->
+            if (f.tag == fragment.tag) {
+                Log.d("CDA_MA", "found equals tag. skip next searching")
+                return
+            }
+        }
+        actionModeListeners.add(fragment)
+        Log.d("CDA_MA", "action mode listener has been added")
+    }
+
+    override fun onSelectedProductCountChanged(count: Int) {
+        Log.d("CDA_MA", "onProductSelected")
+        if (actionModeActive && count == 0) {
+            actionMode!!.finish()
+            actionModeActive = false
+            return
+        }
+
+        if (!actionModeActive && count != 0) {
+            actionMode = startSupportActionMode(actionModeCallback)
+            actionModeActive = true
+            return
+        }
+    }
 
     override fun onSubscribeForProductFragmentInteraction(status : String) {
         if (isShowing) {
@@ -29,14 +56,12 @@ class MainActivity : AppCompatActivity(), SubscribeForProductFragment.OnFragment
         }
     }
 
-    override fun onFragmentInteraction(uri: Uri) {
-
-    }
-
     private lateinit var fabShow : Animation
     private lateinit var fabHide : Animation
     private var isShowing = false
+    private var actionModeActive = false
     private var actionMode : android.support.v7.view.ActionMode? = null
+    private val actionModeListeners = ArrayList<OnActionModeListener>()
 
     private val actionModeCallback = object : android.support.v7.view.ActionMode.Callback {
         override fun onActionItemClicked(p0: ActionMode?, p1: MenuItem?): Boolean {
@@ -45,11 +70,16 @@ class MainActivity : AppCompatActivity(), SubscribeForProductFragment.OnFragment
         }
 
         override fun onCreateActionMode(p0: ActionMode?, p1: Menu?): Boolean {
-            /*val mMenuInflater = p0!!.menuInflater
+            val mMenuInflater = p0!!.menuInflater
             mMenuInflater.inflate(R.menu.contextual_action_mode_menu, p1)
-
-            return true*/
-            return false
+            val fabMarginLayoutParams = fab.layoutParams as ViewGroup.MarginLayoutParams
+            val animateDistance = (fab.height + fabMarginLayoutParams.bottomMargin).toFloat()
+            fab.animate().translationY(animateDistance)
+            Log.d("CDA_MA", "animate distance for fab $animateDistance")
+            actionModeListeners.forEach { listener ->
+                listener.onStartActionMode()
+            }
+            return true
         }
 
         override fun onPrepareActionMode(p0: ActionMode?, p1: Menu?): Boolean {
@@ -57,7 +87,10 @@ class MainActivity : AppCompatActivity(), SubscribeForProductFragment.OnFragment
         }
 
         override fun onDestroyActionMode(p0: ActionMode?) {
-            //finishActionMode()
+            fab.animate().translationY(0f)
+            actionModeListeners.forEach { listener ->
+                listener.onDestroyActionMode()
+            }
         }
 
     }

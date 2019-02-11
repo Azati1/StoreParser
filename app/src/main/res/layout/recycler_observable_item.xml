@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         app:cardCornerRadius="4dp"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp" android:id="@+id/product_card">
 
     <LinearLayout
             android:layout_width="match_parent"

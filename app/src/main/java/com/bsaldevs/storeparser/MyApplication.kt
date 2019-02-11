@@ -2,7 +2,12 @@ package com.bsaldevs.storeparser
 
 import android.app.Application
 import android.arch.persistence.room.Room
-import android.arch.persistence.room.RoomDatabase
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import com.bsaldevs.storeparser.parsers.MvideoStoreParser
+import java.util.*
 
 class MyApplication : Application() {
 
@@ -15,9 +20,16 @@ class MyApplication : Application() {
         database = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "production")
             .allowMainThreadQueries()
             .build()
+
+        val products = getProducts()
+        products.forEach { p ->
+            //removeProduct(p)
+            this.products.add(p)
+        }
+
     }
 
-    public fun addProduct(product: Product) {
+    fun addProduct(product: Product) {
         products.add(product)
         database.productDao().insertAllProducts(product)
         listeners.forEach { listener ->
@@ -25,22 +37,27 @@ class MyApplication : Application() {
         }
     }
 
-    public fun removeProduct(product: Product) {
+    private fun removeProduct(product: Product) {
+        Log.d("CDA", "before removing from app - ${products.size}")
+        Log.d("CDA", "before removing from db - ${getProducts().size}")
         products.remove(product)
+        database.productDao().removeProduct(product)
+        Log.d("CDA", "after removing from app - ${products.size}")
+        Log.d("CDA", "after removing from db - ${getProducts().size}")
         listeners.forEach { listener ->
             listener.onProductCountChanged()
         }
     }
 
-    public fun getProducts() : List<Product> {
+    fun getProducts() : List<Product> {
         return database.productDao().getAllProducts()
     }
 
-    public fun registerOnProductActionListener(onProductAction: OnProductAction) {
+    fun registerOnProductActionListener(onProductAction: OnProductAction) {
         listeners.add(onProductAction)
     }
 
-    public fun unregisterOnProductActionListner(onProductAction: OnProductAction) {
+    private fun unregisterOnProductActionListner(onProductAction: OnProductAction) {
         listeners.remove(onProductAction)
     }
 
