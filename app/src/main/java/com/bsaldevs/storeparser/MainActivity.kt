@@ -1,5 +1,6 @@
 package com.bsaldevs.storeparser
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -181,7 +182,10 @@ class MainActivity : AppCompatActivity(), SubscribeForProductFragment.OnFragment
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_settings -> Toast.makeText(this@MainActivity, "Настройки", Toast.LENGTH_SHORT).show()
+            R.id.action_settings -> {
+                val intent = Intent(this@MainActivity, SettingActivity::class.java)
+                startActivity(intent)
+            } //Toast.makeText(this@MainActivity, "Настройки", Toast.LENGTH_SHORT).show()
             android.R.id.home -> finishActionMode()
             else -> super.onOptionsItemSelected(item)
         }

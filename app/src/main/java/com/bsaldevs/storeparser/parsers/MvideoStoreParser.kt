@@ -4,6 +4,7 @@ import android.os.AsyncTask
 import android.util.Log
 import com.bsaldevs.storeparser.Product
 import org.jsoup.Jsoup
+import org.jsoup.select.Elements
 
 
 class MvideoStoreParser {
@@ -138,6 +139,7 @@ class MvideoStoreParser {
         override fun doInBackground(vararg p0: Void?): String? {
             val document = Jsoup.connect(url).get()
             val elements = document.select("span")
+
 
             var name = ""
 
