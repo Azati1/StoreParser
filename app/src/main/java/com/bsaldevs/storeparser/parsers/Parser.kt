@@ -2,7 +2,7 @@ package com.bsaldevs.storeparser.parsers
 
 import com.bsaldevs.storeparser.Product
 
-abstract class Parser() {
+abstract class Parser {
 
     enum class Store {
         DNS_SHOP,
@@ -10,11 +10,11 @@ abstract class Parser() {
         M_VIDEO
     }
 
-    protected abstract fun getStore() : Store
-    protected abstract fun parseProduct(url: String, onParseProductListener: OnParseProductListener)
+    abstract fun parseProduct(url: String, onParseProductListener: OnParseProductListener)
     protected abstract fun parseName(url: String, onParseProductNameListener: OnParseProductNameListener)
     protected abstract fun parseImageURL(url: String, onParseProductImageURLListener: OnParseProductImageURLListener)
     protected abstract fun parsePrice(url: String, onParseProductPriceListener: OnParseProductPriceListener)
+    protected abstract fun getStore() : Store
 
     interface OnParseProductListener {
         fun onComplete(product: Product)
