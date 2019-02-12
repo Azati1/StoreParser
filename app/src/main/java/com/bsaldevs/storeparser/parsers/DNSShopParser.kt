@@ -4,11 +4,10 @@ import android.os.AsyncTask
 import android.util.Log
 import com.bsaldevs.storeparser.Product
 import org.jsoup.Jsoup
-import org.jsoup.select.Elements
 
-class   DNSShopParser{
-    fun parseProduct(url: String, onParseListener: OnParseProductListener) {
+class DNSShopParser : Parser() {
 
+    override fun parseProduct(url: String, onParseProductListener: Parser.OnParseProductListener) {
         var parseParameter = 0
 
         var mPrice = 0
@@ -20,7 +19,7 @@ class   DNSShopParser{
                 mPrice = price
                 parseParameter++
                 if (parseParameter == 3)
-                    onParseListener.onComplete(Product(url, mPrice, mImageURL, mName))
+                    onParseProductListener.onComplete(Product(url, mPrice, mImageURL, mName))
             }
         })
 
@@ -29,7 +28,7 @@ class   DNSShopParser{
                 mImageURL = imageURL
                 parseParameter++
                 if (parseParameter == 3)
-                    onParseListener.onComplete(Product(url, mPrice, mImageURL, mName))
+                    onParseProductListener.onComplete(Product(url, mPrice, mImageURL, mName))
             }
         })
 
@@ -38,25 +37,22 @@ class   DNSShopParser{
                 mName = name
                 parseParameter++
                 if (parseParameter == 3)
-                    onParseListener.onComplete(Product(url, mPrice, mImageURL, mName))
+                    onParseProductListener.onComplete(Product(url, mPrice, mImageURL, mName))
             }
 
         })
-
     }
 
-    public fun parsePrice(url: String, onParseProductPriceListener: OnParseProductPriceListener) {
-
-        val parsePriceTask = ParsePriceTask(url, onParseProductPriceListener = object : OnParseProductPriceListener {
-            override fun onPriceParsed(price: Int) {
-                onParseProductPriceListener.onPriceParsed(price)
+    override fun parseName(url: String, onParseProductNameListener: Parser.OnParseProductNameListener) {
+        val parseNameTask = ParseNameTask(url, onParseProductNameListener = object : OnParseProductNameListener {
+            override fun onNameParsed(name: String) {
+                onParseProductNameListener.onNameParsed(name)
             }
         })
-
-        parsePriceTask.execute()
+        parseNameTask.execute()
     }
 
-    public fun parseImageURL(url: String, onParseProductImageURLListener: OnParseProductImageURLListener) {
+    override fun parseImageURL(url: String, onParseProductImageURLListener: Parser.OnParseProductImageURLListener) {
         val parseImageUrlTask =
             ParseImageUrlTask(url, onParseProductImageURLListener = object : OnParseProductImageURLListener {
                 override fun onImageURLParsed(imageURL: String) {
@@ -66,13 +62,18 @@ class   DNSShopParser{
         parseImageUrlTask.execute()
     }
 
-    private fun parseName(url: String, onParseProductNameListener: OnParseProductNameListener) {
-        val parseNameTask = ParseNameTask(url, onParseProductNameListener = object : OnParseProductNameListener {
-            override fun onNameParsed(name: String) {
-                onParseProductNameListener.onNameParsed(name)
+    override fun parsePrice(url: String, onParseProductPriceListener: Parser.OnParseProductPriceListener) {
+        val parsePriceTask = ParsePriceTask(url, onParseProductPriceListener = object : OnParseProductPriceListener {
+            override fun onPriceParsed(price: Int) {
+                onParseProductPriceListener.onPriceParsed(price)
             }
         })
-        parseNameTask.execute()
+
+        parsePriceTask.execute()
+    }
+
+    override fun getStore(): Store {
+        return Parser.Store.DNS_SHOP
     }
 
     private class ParsePriceTask(val url: String, val onParseProductPriceListener: OnParseProductPriceListener) :
@@ -162,19 +163,4 @@ class   DNSShopParser{
         }
     }
 
-    interface OnParseProductListener {
-        fun onComplete(product: Product)
-    }
-
-    interface OnParseProductPriceListener {
-        fun onPriceParsed(price: Int)
-    }
-
-    interface OnParseProductImageURLListener {
-        fun onImageURLParsed(imageURL: String)
-    }
-
-    interface OnParseProductNameListener {
-        fun onNameParsed(name: String)
-    }
 }

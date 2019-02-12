@@ -5,10 +5,15 @@ import android.util.Log
 import com.bsaldevs.storeparser.Product
 import org.jsoup.Jsoup
 
+class MvideoStoreParser : Parser() {
 
-class MvideoStoreParser {
+    override fun getStore(): Store {
+        return Parser.Store.M_VIDEO
+    }
 
-    fun parseProduct(url: String, onParseListener: OnParseProductListener) {
+    override fun parseProduct(url: String, onParseProductListener: OnParseProductListener) {
+
+        Log.d("CDA", "parseProduct start")
 
         var parseParameter = 0
 
@@ -18,35 +23,38 @@ class MvideoStoreParser {
 
         parsePrice(url, onParseProductPriceListener = object : OnParseProductPriceListener {
             override fun onPriceParsed(price: Int) {
+                Log.d("CDA", "parseProduct: price parsed")
                 mPrice = price
                 parseParameter++
                 if (parseParameter == 3)
-                    onParseListener.onComplete(Product(url, mPrice, mImageURL, mName))
+                    onParseProductListener.onComplete(Product(url, mPrice, mImageURL, mName))
             }
         })
 
         parseImageURL(url, onParseProductImageURLListener = object : OnParseProductImageURLListener {
             override fun onImageURLParsed(imageURL: String) {
+                Log.d("CDA", "parseProduct: imageURL parsed")
                 mImageURL = imageURL
                 parseParameter++
                 if (parseParameter == 3)
-                    onParseListener.onComplete(Product(url, mPrice, mImageURL, mName))
+                    onParseProductListener.onComplete(Product(url, mPrice, mImageURL, mName))
             }
         })
 
         parseName(url, onParseProductNameListener = object : OnParseProductNameListener {
             override fun onNameParsed(name: String) {
+                Log.d("CDA", "parseProduct: name parsed")
                 mName = name
                 parseParameter++
                 if (parseParameter == 3)
-                    onParseListener.onComplete(Product(url, mPrice, mImageURL, mName))
+                    onParseProductListener.onComplete(Product(url, mPrice, mImageURL, mName))
             }
 
         })
 
     }
 
-    public fun parsePrice(url: String, onParseProductPriceListener: OnParseProductPriceListener) {
+    override fun parsePrice(url: String, onParseProductPriceListener: OnParseProductPriceListener) {
 
         val parsePriceTask = ParsePriceTask(url, onParseProductPriceListener = object : OnParseProductPriceListener {
             override fun onPriceParsed(price: Int) {
@@ -57,7 +65,7 @@ class MvideoStoreParser {
         parsePriceTask.execute()
     }
 
-    public fun parseImageURL(url: String, onParseProductImageURLListener: OnParseProductImageURLListener) {
+    override fun parseImageURL(url: String, onParseProductImageURLListener: OnParseProductImageURLListener) {
         val parseImageUrlTask =
             ParseImageUrlTask(url, onParseProductImageURLListener = object : OnParseProductImageURLListener {
                 override fun onImageURLParsed(imageURL: String) {
@@ -67,7 +75,7 @@ class MvideoStoreParser {
         parseImageUrlTask.execute()
     }
 
-    private fun parseName(url: String, onParseProductNameListener: OnParseProductNameListener) {
+    override fun parseName(url: String, onParseProductNameListener: OnParseProductNameListener) {
         val parseNameTask = ParseNameTask(url, onParseProductNameListener = object : OnParseProductNameListener {
             override fun onNameParsed(name: String) {
                 onParseProductNameListener.onNameParsed(name)
@@ -156,26 +164,6 @@ class MvideoStoreParser {
             super.onPostExecute(result)
             onParseProductNameListener.onNameParsed(result!!)
         }
-    }
-
-    interface OnParseProductListener {
-        fun onComplete(product: Product)
-    }
-
-    interface OnParseProductPriceListener {
-        fun onPriceParsed(price: Int)
-    }
-
-    interface OnParseProductImageURLListener {
-        fun onImageURLParsed(imageURL: String)
-    }
-
-    interface OnParseProductNameListener {
-        fun onNameParsed(name: String)
-    }
-
-    interface OnProcessListener {
-        fun onParseComplete(result: String)
     }
 
 }
