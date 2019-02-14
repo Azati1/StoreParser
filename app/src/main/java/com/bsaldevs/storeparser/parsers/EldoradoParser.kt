@@ -11,7 +11,7 @@ class EldoradoParser : Parser() {
         for (element in elements) {
             if (element.select("[itemprop=price]").toString() != "") {
                 price = element.select("[itemprop=price]").attr("content")
-                Log.d("CDA_PARSER", price)
+                Log.d("CDA_ELDO", price)
                 break
             }
         }
@@ -40,8 +40,8 @@ class EldoradoParser : Parser() {
         return imageURL
     }
 
-    override fun getStore(): Store {
-        return Parser.Store.ELDORADO
+    override fun getStore(): ProductParsable.Store {
+        return ProductParsable.Store.ELDORADO
     }
 
 }

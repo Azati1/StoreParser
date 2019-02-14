@@ -6,13 +6,7 @@ import com.bsaldevs.storeparser.Product
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
-abstract class Parser {
-
-    enum class Store {
-        DNS_SHOP,
-        ELDORADO,
-        M_VIDEO
-    }
+abstract class Parser : ProductParsable {
 
     companion object {
         const val PARAM_COUNT = 3
@@ -40,8 +34,8 @@ abstract class Parser {
 
                 ParsePriceTask(this@Parser, document, object : OnParseProductParamListener {
                     override fun onComplete(value: String) {
-                        Log.d("CDA", "parseProduct: price parsed")
                         mPrice = value.toInt()
+                        Log.d("CDA", "parseProduct: price parsed - $mPrice")
                         parsedParamsCount++
                         if (parsedParamsCount == Parser.PARAM_COUNT)
                             onParseProductListener.onComplete(Product(url, mPrice, mImageURL, mName))
@@ -50,8 +44,8 @@ abstract class Parser {
 
                 ParseNameTask(this@Parser, document, object : OnParseProductParamListener {
                     override fun onComplete(value: String) {
-                        Log.d("CDA", "parseProduct: name parsed")
                         mName = value
+                        Log.d("CDA", "parseProduct: name parsed - $value")
                         parsedParamsCount++
                         if (parsedParamsCount == Parser.PARAM_COUNT)
                             onParseProductListener.onComplete(Product(url, mPrice, mImageURL, mName))
@@ -60,8 +54,8 @@ abstract class Parser {
 
                 ParseImageUrlTask(this@Parser, document, object : OnParseProductParamListener {
                     override fun onComplete(value: String) {
-                        Log.d("CDA", "parseProduct: imageURL parsed")
                         mImageURL = value
+                        Log.d("CDA", "parseProduct: imageURL parsed - $value")
                         parsedParamsCount++
                         if (parsedParamsCount == Parser.PARAM_COUNT)
                             onParseProductListener.onComplete(Product(url, mPrice, mImageURL, mName))
@@ -72,10 +66,6 @@ abstract class Parser {
         })
         downloadHTML.execute()
     }
-
-    abstract fun parseProductPrice(document: Document) : String
-    abstract fun parseProductName(document: Document) : String
-    abstract fun parseProductImageURL(document: Document) : String
 
     private class ParsePriceTask(val parser: Parser, val document: Document, val onParseProductParamListener: OnParseProductParamListener) :
         AsyncTask<Void, Void, String>() {
@@ -116,8 +106,6 @@ abstract class Parser {
             onParseProductParamListener.onComplete(result)
         }
     }
-
-    protected abstract fun getStore() : Store
 
     interface OnParseProductListener {
         fun onComplete(product: Product)

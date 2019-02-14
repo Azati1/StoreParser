@@ -43,8 +43,8 @@ class DNSShopParser : Parser() {
         return imageURL
     }
 
-    override fun getStore(): Store {
-        return Parser.Store.DNS_SHOP
+    override fun getStore(): ProductParsable.Store {
+        return ProductParsable.Store.DNS_SHOP
     }
 
 }

@@ -44,8 +44,8 @@ class MvideoStoreParser : Parser() {
         return imageURL
     }
 
-    override fun getStore(): Store {
-        return Parser.Store.M_VIDEO
+    override fun getStore(): ProductParsable.Store {
+        return ProductParsable.Store.M_VIDEO
     }
 
 }
