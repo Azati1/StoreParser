@@ -5,4 +5,21 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main2">Main2Activity</string>
+
+    <string-array name="changeNotification">
+        <item>Цена изменилась</item>
+        <item>Цена уменьшилась</item>
+        <item>Цена увеличилась</item>
+    </string-array>
+
+    <string-array name="priceView">
+        <item>Минимум</item>
+        <item>Максимум</item>
+    </string-array>
+
+    <string-array name="shopView">
+        <item>М.Видео</item>
+        <item>Эльдорадо</item>
+        <item>DNS-shop</item>
+    </string-array>
 </resources>

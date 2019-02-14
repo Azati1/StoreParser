@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bsaldevs.storeparser.parsers.MvideoStoreParser
+import com.bsaldevs.storeparser.parsers.Parser
 import kotlinx.android.synthetic.main.fragment_subscribe_for_goods.*
 
 class SubscribeForProductFragment : Fragment(), OnActionButtonListener {
@@ -30,7 +31,7 @@ class SubscribeForProductFragment : Fragment(), OnActionButtonListener {
 
     private fun subscribeForGoods(productURL : String) {
         val mvideoStoreParser = MvideoStoreParser()
-        mvideoStoreParser.parseProduct(productURL, onParseListener = object : MvideoStoreParser.OnParseProductListener {
+        mvideoStoreParser.parseProduct(productURL,object : Parser.OnParseProductListener {
             override fun onComplete(product: Product) {
                 application.addProduct(product)
             }
