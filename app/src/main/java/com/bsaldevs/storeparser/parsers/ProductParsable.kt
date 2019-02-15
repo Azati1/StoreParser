@@ -1,10 +1,11 @@
 package com.bsaldevs.storeparser.parsers
 
+import com.bsaldevs.storeparser.Product
 import org.jsoup.nodes.Document
 
 interface ProductParsable {
 
-    enum class Store {
+    enum class Store{
         DNS_SHOP,
         ELDORADO,
         M_VIDEO

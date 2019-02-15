@@ -30,8 +30,8 @@ class SubscribeForProductFragment : Fragment(), OnActionButtonListener {
     }
 
     private fun subscribeForGoods(productURL : String) {
-        val mvideoStoreParser = MvideoStoreParser()
-        mvideoStoreParser.parseProduct(productURL,object : Parser.OnParseProductListener {
+        val parser = Parser.create(productURL)
+        parser.parseProduct(productURL,object : Parser.OnParseProductListener {
             override fun onComplete(product: Product) {
                 application.addProduct(product)
             }

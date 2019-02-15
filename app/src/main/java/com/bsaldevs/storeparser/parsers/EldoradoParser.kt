@@ -37,6 +37,7 @@ class EldoradoParser : Parser() {
                 break
             }
         }
+
         return imageURL
     }
 

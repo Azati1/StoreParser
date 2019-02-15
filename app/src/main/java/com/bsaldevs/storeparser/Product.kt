@@ -3,6 +3,7 @@ package com.bsaldevs.storeparser
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import com.bsaldevs.storeparser.parsers.ProductParsable
 import java.io.Serializable
 
 @Entity
@@ -22,5 +23,4 @@ class Product(
     fun setId(id : Int) {
         this.id = id
     }
-
 }
